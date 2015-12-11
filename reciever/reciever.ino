@@ -48,16 +48,17 @@ void rising() {
       boolean matchZero = matchZeroBit(pwm_low_length);
       
       setState(newState, matchOne || matchZero);
+
       if (state == newState) {
           int bitNumber = (state - 1) / 2 - 1;
-          //fillDataArray(bitNumber, matchOne);
-          
-          if (bitNumber == DATA_BIT_SIZE) {
-            //for (byte i = 0; i < DATA_ARRAY_SIZE; i++) {
-            //    Serial.print(data[i]);
-            //    Serial.print(" ");         
-            //}
-            Serial.println(matchOne);    
+          fillDataArray(bitNumber, matchOne);
+
+          if (bitNumber == DATA_BIT_SIZE - 1) {
+            for (byte i = 0; i < DATA_ARRAY_SIZE; i++) {
+                Serial.print(data[i]);
+                Serial.print(" ");
+            }
+            Serial.println();
 
             setState(state, false);
           }            
@@ -80,9 +81,7 @@ void falling() {
 
 void fillDataArray(byte bitNumber, boolean isOne) {
    byte dataArrayIndex = bitNumber / BITS_PER_PACKET;
-   byte value = bitNumber ? 1 : 0;
-
-   data[dataArrayIndex] = (data[dataArrayIndex] << 1) & value;
+   data[dataArrayIndex] = (data[dataArrayIndex] << 1) | isOne;
 }
 
 void clearDataArray(byte upTo) {
@@ -116,9 +115,16 @@ void setState(byte st, boolean condition) {
         state = st;
     } else {
         state = 0;
-        //if (st > 3) {
-        //  clearDataArray(((st - 2) / 2 - 1) / BITS_PER_PACKET); 
-        //}      
+        if (st > 3) {
+          clearDataArray(((st - 2) / 2 - 1) / BITS_PER_PACKET);
+        }
     }
 }
+
+
+
+
+
+
+
 
