@@ -48,11 +48,13 @@ volatile byte state = 0;
 // G0-H3 - humidity written backwards as 100 - HUMIDITY in two's compliment code, for example:
 //          1110|1011 = 59% because 101001 (inverted all bits and add 1) = 41, and 100 - 41 = 59
 //
-// I0-I3 - 4 less significant bits of check sum of the tetrads T1-T8 written backwards.
+// I0-I3 - 4 check sum which is calculated as a sum of less significant bits
+//            of check sum of the tetrads T1-T8 written backwards.
 //            for example let's look at the example message:
-//            1011|1100|0000|0101|0011|0000|0001|1011|1101
-//            sum of the tetrad T1-T8 = 101011, lets take last 4 bits and wrote them backward:
-//            1101 which is equal T9 tetrad
+//            1011|1100|0100|0000|1111|0000|0010|1111|0010
+//            sum of the tetrad T1-T8 where each bit written backwards = 110100,
+//            lets take last 4 bits and wrote them backward:
+//            0010 which is equal to T9 tetrad
 
 volatile byte data[DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -176,7 +178,7 @@ byte checkSumMatch() {
     //Sum first 8 tetrads
     int sum = 0;
     for (byte i = 0; i < DATA_ARRAY_SIZE - 1; i++) {
-        sum += (int)data[i];
+        sum += getLastFourBitsReversed(data[i]);
     }
 
     //returns true if calculated check sum matches received
@@ -193,10 +195,10 @@ int getTemperature() {
 
     if ((data[5] & 1) == 1) {
         //negative number, use two's compliment conversion
-        temperature = (~temperature + 1);
+        temperature = ~temperature + 1;
 
         //clear higher bits
-        temperature = temperature & 4096;
+        temperature = temperature & 4095;
     }
 
     return temperature;
@@ -259,14 +261,15 @@ boolean matchZeroBit(int value) {
 }
 
 //Whether pulse length value matches specified constant with specified threshold
-boolean match(int value, int mathConst, int treshold) {
-    return value > mathConst - treshold && value < mathConst + treshold;
+boolean match(int value, int mathConst, int threshold) {
+    return value > mathConst - threshold && value < mathConst + threshold;
 }
 
 //set state to new value but only when condition is true
 void setState(byte st, boolean condition) {
     state = condition ? st : 0;
 }
+
 
 
 
