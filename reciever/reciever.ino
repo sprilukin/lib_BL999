@@ -13,7 +13,7 @@
 
 #define DATA_BITS_AMOUNT 36  //total amount of bits sent by BL999 sensor
 #define BITS_PER_PACKET 4 //36 bits are sent in packets by 4 bits (tetrads)
-#define DATA_ARRAY_SIZE 9 //totally we have 36/4 = 9 tetrads
+#define DATA_ARRAY_SIZE DATA_BITS_AMOUNT / BITS_PER_PACKET //totally we have 36/4 = 9 tetrads
 
 
 volatile unsigned int pwm_high_length = 0;
@@ -269,7 +269,3 @@ boolean match(int value, int mathConst, int threshold) {
 void setState(byte st, boolean condition) {
     state = condition ? st : 0;
 }
-
-
-
-
