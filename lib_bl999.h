@@ -3,7 +3,6 @@
  * See README file in this directory for more documentation
  *
  * Author: Sergey Prilukin sprilukin@gmail.com
- * $Id$
  */
 
 #ifndef bl999_h
