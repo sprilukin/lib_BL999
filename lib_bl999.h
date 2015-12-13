@@ -1,5 +1,5 @@
 /*
- * bl999.h - library for Arduino to work with BL999 temperature/humidity sensor
+ * lib_bl999.h - library for Arduino to work with BL999 temperature/humidity sensor
  * See README file in this directory for more documentation
  *
  * Author: Sergey Prilukin sprilukin@gmail.com
@@ -53,10 +53,10 @@
 //In this struct result will be stored
 typedef struct {
     byte channel : 2; // up to 3 channels
-    byte powerUUID : 6; //uniq power state per current power on of the sensor
+    byte powerUUID : 6; //unique power state per current power on of the sensor
     byte battery : 1; // 0 - ok, 1- low
-    int temperature : 12; // 217 = 21.7°
-    byte humidity : 8; //0-100
+    int temperature : 12; // stored as temperature * 10: 217 = 21.7°
+    byte humidity : 8; //1-99
 } BL999Info;
 
 // Cant really do this as a real C++ class, since we need to have
@@ -64,39 +64,63 @@ typedef struct {
 extern "C" {
 
 // API
+
+//set up digital pin which will be used to receive sensor signals
 extern void bl999_set_rx_pin(byte pin);
 
+//starts listening of the signals and read message from sensor(s)
 extern void bl999_rx_start();
 
+//stops listening for the signals
 extern void bl999_rx_stop();
 
+//blocks execution until message from sensor(s) will be received
 extern void bl999_wait_rx();
 
+//blocks execution until message from sensor(s) will be received
+//but not more than for passed amount of milliseconds
 extern boolean bl999_wait_rx_max(unsigned long milliseconds);
 
+//returns true if whole message from sensor(s) was recieved
+//NOTE: message will not be overridden with other messages
+//until it will be read by the client using bl999_get_message
+//NOTE2: this function does not take in account check sum
 extern byte bl999_have_message();
 
+//if message was fully recieved (matches check sum or not)
+//it will be written to info structure
+//returns true if message received and check sum matches
+//returns false otherwise
 extern boolean bl999_get_message(BL999Info& info);
 
 // Private
 
+//rising ISR
 extern void _bl999_rising();
 
+//falling ISR
 extern void _bl999_falling();
 
+//calc check sum and compare with received one
 extern boolean _bl999_isCheckSumMatch();
 
+//get sensor channel from message
 extern byte _bl999_getSensorChannel();
 
+//get power UUID from message
 extern byte _bl999_getPowerUUID();
 
+//get power status form message
 extern byte _bl999_getPowerStatus();
 
+//get temperature from message
 extern int _bl999_getTemperature();
 
+//get humidity from message
 extern byte _bl999_getHumidity();
 
-extern void _bl999_fillDataArray(byte bitNumber, boolean isOne);
+//fill data array with next data bit
+extern void _bl999_fillDataArray(byte bitNumber, byte value);
 
 // Matcher for divider bit
 extern boolean _bl999_matchDivider(int value);

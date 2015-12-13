@@ -1,5 +1,5 @@
 /*
- * bl999.h - library for Arduino to work with BL999 temperature/humidity sensor
+ * lib_bl999.cpp - library for Arduino to work with BL999 temperature/humidity sensor
  * See README file in this directory for more documentation
  *
  * Author: Sergey Prilukin sprilukin@gmail.com
@@ -7,7 +7,7 @@
  */
 
 #include <Arduino.h>
-#include "bl999.h"
+#include "lib_bl999.h"
 
 static volatile unsigned int bl999_pwm_high_length = 0;
 static volatile unsigned int bl999_pwm_low_length = 0;
@@ -122,7 +122,7 @@ extern void _bl999_rising() {
                 int bitNumber = (bl999_state - 1) / 2 - 1;
 
                 //fill data array with this next value bit
-                _bl999_fillDataArray(bitNumber, matchOne);
+                _bl999_fillDataArray(bitNumber, (byte)matchOne);
 
                 if (bitNumber == BL999_DATA_BITS_AMOUNT - 1) {
                     //This was the last value bit
@@ -240,7 +240,7 @@ extern byte _bl999_getHumidity() {
     return 100 - (byte)humidity;
 }
 
-extern void _bl999_fillDataArray(byte bitNumber, boolean isOne) {
+extern void _bl999_fillDataArray(byte bitNumber, byte value) {
     byte dataArrayIndex = bitNumber / BL999_BITS_PER_PACKET;
     byte bitInNibble = bitNumber % 4;
 
@@ -252,7 +252,7 @@ extern void _bl999_fillDataArray(byte bitNumber, boolean isOne) {
 
     //Write all nibbles in reversed order
     //so it will be easier to do calculations later
-    bl999_data[dataArrayIndex] |= (isOne << bitInNibble);
+    bl999_data[dataArrayIndex] |= (value << bitInNibble);
 }
 
 // Matcher for divider bit
