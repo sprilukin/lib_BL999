@@ -97,10 +97,12 @@ void rising() {
             fillDataArray(bitNumber, matchOne);
 
             if (bitNumber == DATA_BITS_AMOUNT - 1) {
-
                 //This was the last value bit
-                //All is done we can return the whole message to the client!
-                printDataArray();
+
+                //All is done we can return the whole message to the client
+                if (checkSumMatch()) {
+                    printDataArray();
+                }
 
                 //clear state to zero since nothing more we can do
                 setState(0, true);
@@ -132,13 +134,7 @@ void falling() {
 
 void printDataArray() {
     Serial.println("==== Sensor data captured ===");
-
-    for (byte i = 0; i < DATA_ARRAY_SIZE; i++) {
-        printByteAsBitSet(data[i]);
-        Serial.print("|");
-    }
-    Serial.println();
-
+    
     byte sensorNumber = data[1] >> 2;
     byte powerOnUUID = (data[0] << 2) | (data[1] & 3);
     byte powerState = data[2] >> 3;
@@ -160,20 +156,9 @@ void printDataArray() {
 
     Serial.print("Humidity: ");
     Serial.println(humidity);
-
-    Serial.print("CheckSumMatch: ");
-    printByteAsBitSet(checkSumMatch());
-    Serial.println();
 }
 
-void printByteAsBitSet(byte b) {
-    Serial.print((b & 8) >> 3);
-    Serial.print((b & 4) >> 2);
-    Serial.print((b & 2) >> 1);
-    Serial.print(b & 1);
-}
-
-byte checkSumMatch() {
+boolean checkSumMatch() {
 
     //Sum first 8 tetrads
     int sum = 0;
@@ -182,8 +167,7 @@ byte checkSumMatch() {
     }
 
     //returns true if calculated check sum matches received
-    //return getLastFourBitsReversed(sum) == data[DATA_ARRAY_SIZE - 1];
-    return getLastFourBitsReversed(sum);
+    return getLastFourBitsReversed(sum) == data[DATA_ARRAY_SIZE - 1];
 }
 
 int getTemperature() {
