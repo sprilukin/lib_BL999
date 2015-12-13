@@ -66,7 +66,7 @@ volatile byte data[DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 void setup() {
     Serial.begin(115200);
     // when pin D2 goes high, call the rising function
-    attachInterrupt(digitalPinToInterrupt(3), rising, RISING);
+    attachInterrupt(digitalPinToInterrupt(2), rising, RISING);
 }
 
 void loop() { }
