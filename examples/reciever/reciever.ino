@@ -63,16 +63,18 @@ volatile byte state = 0;
 // will be stored as 1101|0011|0010|0000|1111|0000|0100|1111|0100
 volatile byte data[DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+byte pin = 2;
+
 void setup() {
     Serial.begin(115200);
     // when pin D2 goes high, call the rising function
-    attachInterrupt(digitalPinToInterrupt(2), rising, RISING);
+    attachInterrupt(digitalPinToInterrupt(pin), rising, RISING);
 }
 
 void loop() { }
 
 void rising() {
-    attachInterrupt(0, falling, FALLING);
+    attachInterrupt(digitalPinToInterrupt(pin), falling, FALLING);
     prev_time_rising = micros();
 
     pwm_low_length = micros() - prev_time_falling;
@@ -117,7 +119,7 @@ void rising() {
 }
 
 void falling() {
-    attachInterrupt(0, rising, RISING);
+    attachInterrupt(digitalPinToInterrupt(pin), rising, RISING);
 
     //remember current time
     //it will be used in raising function
