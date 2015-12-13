@@ -33,7 +33,7 @@ volatile byte state = 0;
 // A0-A3,B2-B3  - UUID which is randomly set once sensor is turned on
 //                and it not changed until next power off
 //
-// B0-B1  - Number of the sensor: 01 - 1, 10 - 2, 11 - 3
+// B0-B1  - Number of channel of the sensor: 01 - 1, 10 - 2, 11 - 3
 //
 // C0 - battery info: 0 - battery is ok, 1 - battery is low
 //
@@ -49,13 +49,18 @@ volatile byte state = 0;
 //          1110|1011 = 59% because 101001 (inverted all bits and add 1) = 41, and 100 - 41 = 59
 //
 // I0-I3 - 4 check sum which is calculated as a sum of less significant bits
-//            of check sum of the tetrads T1-T8 written backwards.
+//            of check sum of the nibbles T1-T8 written backwards.
 //            for example let's look at the example message:
 //            1011|1100|0100|0000|1111|0000|0010|1111|0010
-//            sum of the tetrad T1-T8 where each bit written backwards = 110100,
+//            sum of the nibbles T1-T8 where each bit written backwards = 110100,
 //            lets take last 4 bits and wrote them backward:
-//            0010 which is equal to T9 tetrad
+//            0010 which is equal to T9 nibble
 
+// data array is used to store the whole message
+// We will write all nibbles in data array in reversed order
+// so it will be easier to calculate temperature, check sum etc. later
+// for example this message: 1011|1100|0100|0000|1111|0000|0010|1111|0010
+// will be stored as 1101|0011|0010|0000|1111|0000|0100|1111|0100
 volatile byte data[DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 void setup() {
@@ -100,7 +105,7 @@ void rising() {
                 //This was the last value bit
 
                 //All is done we can return the whole message to the client
-                if (checkSumMatch()) {
+                if (isCheckSumMatch()) {
                     printDataArray();
                 }
 
@@ -135,15 +140,14 @@ void falling() {
 void printDataArray() {
     Serial.println("==== Sensor data captured ===");
     
-    byte sensorNumber = data[1] >> 2;
-    byte powerOnUUID = (data[0] << 2) | (data[1] & 3);
-    byte powerState = data[2] >> 3;
+    byte sensorChannel = getSensorChannel();
+    byte powerOnUUID = getPowerUUID();
+    byte powerState = getPowerStatus();
     float temperature = (float)getTemperature() / 10;
     byte humidity = getHumidity();
-    boolean checkSumMatches = checkSumMatch();
 
-    Serial.print("No: ");
-    Serial.println(sensorNumber);
+    Serial.print("Channel: ");
+    Serial.println(sensorChannel);
 
     Serial.print("Power UUID: ");
     Serial.println(powerOnUUID);
@@ -158,31 +162,55 @@ void printDataArray() {
     Serial.println(humidity);
 }
 
-boolean checkSumMatch() {
+int isCheckSumMatch() {
 
-    //Sum first 8 tetrads
+    //Sum first 8 nibbles
     int sum = 0;
     for (byte i = 0; i < DATA_ARRAY_SIZE - 1; i++) {
-        sum += getLastFourBitsReversed(data[i]);
+        sum += data[i];
     }
 
+    //clear higher bits
+    sum &= 15;
+
     //returns true if calculated check sum matches received
-    return getLastFourBitsReversed(sum) == data[DATA_ARRAY_SIZE - 1];
+    return sum == data[DATA_ARRAY_SIZE - 1];
+}
+
+byte getSensorChannel() {
+    //Channel is bits B0, B1 in T2 nibble
+    //Since we store T2 in reversed order
+    //we have to get 3,4 bits ot data[1] and reverse them
+    return ((data[1] & 1) << 1) | ((data[1] & 2) >> 1);
+}
+
+byte getPowerUUID() {
+    //we do not reverse power uuid since value is still uniq
+    return (data[0] << 2) | ((data[1] & 12) >> 2);
+}
+
+byte getPowerStatus() {
+    //Power or battery status is C0 bit in T3 nibble
+    //since in data array we wrote T3 in reversed order
+    //it will be the first bit in data[2]
+    return data[2] & 1;
 }
 
 int getTemperature() {
     int temperature = 0;
 
-    temperature = (((int)getLastFourBitsReversed(data[5]) << 8)
-                   | ((int)getLastFourBitsReversed(data[4]) << 4)
-                   | (int)getLastFourBitsReversed(data[3]));
+    //Temperature is stored in T4,T5,T6 nibbles
+    //lowest nibble - first
+    //since we already reversed bits order in these nibbles
+    //all we have to do is to reverse nibbles order
+    temperature = (((int)data[5] << 8) | ((int)data[4] << 4) | (int)data[3]);
 
     if ((data[5] & 1) == 1) {
         //negative number, use two's compliment conversion
         temperature = ~temperature + 1;
 
-        //clear higher bits
-        temperature = temperature & 4095;
+        //clear higher bits and convert to negative
+        temperature = -1 * (temperature & 4095);
     }
 
     return temperature;
@@ -190,38 +218,31 @@ int getTemperature() {
 
 int getHumidity() {
 
-    //negative number, use two's compliment conversion
-    int humidity = ((int)(getLastFourBitsReversed(data[7]) << 4)
-            | (int)getLastFourBitsReversed(data[6]));
+    //Humidity is stored in nibbles T7,T8
+    //since bits in these nibbles are already in reversed order
+    //we just have to get number by reversing nibbles orderßßß
+    int humidity = ((int)data[7] << 4) | (int)data[6];
 
+    //negative number, use two's compliment conversion
     humidity = ~humidity + 1;
 
+    //humidity is stored as 100 - humidity
     return 100 - humidity;
 }
 
 void fillDataArray(byte bitNumber, boolean isOne) {
     byte dataArrayIndex = bitNumber / BITS_PER_PACKET;
-    boolean isFirstBitInTetrad = bitNumber % 4 == 0;
+    byte bitInNibble = bitNumber % 4;
 
-    if (isFirstBitInTetrad) {
-        //clear tetrad since it could be filled with random data
+    if (bitInNibble == 0) {
+        // if it's the first bit in nibble -
+        // clear nibble since it could be filled with random data at this time
         data[dataArrayIndex] = 0;
     }
 
-    data[dataArrayIndex] = (data[dataArrayIndex] << 1) | isOne;
-}
-
-//reverse last 4 bits and return
-//so 0101 -> 1010, 1100 -> 0011
-byte getLastFourBitsReversed(int b) {
-    byte inverted = 0;
-
-    inverted = inverted | ((b & 1) << 3); //(byte & 0001) << 3 so could be 1000
-    inverted = inverted | (b & 2) << 1; //(byte & 0010) << 1 so could be 0100
-    inverted = inverted | (b & 4) >> 1; // (byte & 0100) >> 1 so could be 0010
-    inverted = inverted | (b & 8) >> 3; // (byte & 1000) >> 3 so could be 0001
-
-    return inverted;
+    //Write all nibbles in reversed order
+    //so it will be easier to do calculations later
+    data[dataArrayIndex] |= (isOne << bitInNibble);
 }
 
 // Matcher for divider bit
@@ -253,3 +274,4 @@ boolean match(int value, int mathConst, int threshold) {
 void setState(byte st, boolean condition) {
     state = condition ? st : 0;
 }
+
