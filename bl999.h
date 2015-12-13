@@ -26,6 +26,14 @@
 #define BITS_PER_PACKET 4 //36 bits are sent in packets by 4 bits (tetrads)
 #define DATA_ARRAY_SIZE DATA_BITS_AMOUNT / BITS_PER_PACKET //totally we have 36/4 = 9 tetrads
 
+typedef struct {
+    byte channel : 2;
+    byte powerUUID : 6;
+    byte battery : 1;
+    unsigned int temperature : 12;
+    byte humidity : 8;
+} BL999Info;
+
 // Cant really do this as a real C++ class, since we need to have
 // an ISR
 extern "C" {
@@ -38,11 +46,11 @@ extern void bl999_rx_stop();
 
 extern void bl999_wait_rx();
 
-extern byte bl999_wait_rx_max(unsigned long milliseconds);
+extern boolean bl999_wait_rx_max(unsigned long milliseconds);
 
 extern byte bl999_have_message();
 
-extern boolean bl999_get_message(byte* buf);
+extern boolean bl999_get_message(BL999Info& info);
 
 // Private
 
