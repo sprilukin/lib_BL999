@@ -100,7 +100,7 @@ __| |_________| |_____| |__| |_
     and writes it to serial port
   
 ```C
-#include <bl999.h>
+#include <lib_bl999.h>
 
 static BL999Info info;
 
