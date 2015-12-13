@@ -4,9 +4,9 @@
 static BL999Info info;
 
 void setup() {
+    Serial.begin(115200);
     bl999_set_rx_pin(2);
     bl999_rx_start();
-    Serial.begin(115200);
 }
 
 void loop() {
