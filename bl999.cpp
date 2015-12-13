@@ -77,10 +77,12 @@ extern boolean bl999_get_message(BL999Info& info) {
     info.temperature = _bl999_getTemperature();
     info.humidity = _bl999_getHumidity();
 
+    byte checkSumMatches = _bl999_isCheckSumMatch();
+
     bl999_state = 0;
     bl999_message_ready = false;
 
-    return true;
+    return checkSumMatches;
 }
 
 //===============
@@ -92,7 +94,9 @@ extern void _bl999_rising() {
 
     //Do not rewrite last received but unread message
     if (!bl999_message_ready) {
-        bl999_prev_time_falling = micros();
+
+        //will be used in falling interrupt
+        bl999_prev_time_rising = micros();
 
         bl999_pwm_low_length = micros() - bl999_prev_time_falling;
 
@@ -124,12 +128,18 @@ extern void _bl999_rising() {
                     //This was the last value bit
 
                     //All is done we can return the whole message to the client
-                    if (_bl999_isCheckSumMatch()) {
+                    //Do not calc check sum here.
+                    //It will be calculated at message reading stage
+                    //if (_bl999_isCheckSumMatch()) {
                         bl999_message_ready = true;
-                    }
+                    //}
 
                     //clear state to zero since nothing more we can do
                     _bl999_setState(0, true);
+                    bl999_prev_time_rising = 0;
+                    bl999_prev_time_falling = 0;
+                    bl999_pwm_high_length = 0;
+                    bl999_pwm_low_length = 0;
                 }
             }
         }
@@ -149,7 +159,7 @@ extern void _bl999_falling() {
         bl999_pwm_high_length = micros() - bl999_prev_time_rising;
 
         if (bl999_state % 2 == 0) {
-            //We only can proceed is thate is even: 0, 2, 3 - after this state
+            //We only can proceed if state is even: 0, 2, 4 - after this state
             //we always expect divider HIGH pulse to happen
             _bl999_setState(bl999_state + 1, _bl999_matchDivider(bl999_pwm_high_length));
         } else {

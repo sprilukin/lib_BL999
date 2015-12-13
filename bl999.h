@@ -52,11 +52,11 @@
 
 //In this struct result will be stored
 typedef struct {
-    byte channel : 2;
-    byte powerUUID : 6;
-    byte battery : 1;
-    int temperature : 12;
-    byte humidity : 8;
+    byte channel : 2; // up to 3 channels
+    byte powerUUID : 6; //uniq power state per current power on of the sensor
+    byte battery : 1; // 0 - ok, 1- low
+    int temperature : 12; // 217 = 21.7°
+    byte humidity : 8; //0-100
 } BL999Info;
 
 // Cant really do this as a real C++ class, since we need to have
