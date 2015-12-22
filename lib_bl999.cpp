@@ -8,10 +8,10 @@
 #include <Arduino.h>
 #include "lib_bl999.h"
 
-static volatile unsigned int bl999_pwm_high_length = 0;
-static volatile unsigned int bl999_pwm_low_length = 0;
-static volatile unsigned int bl999_prev_time_rising = 0;
-static volatile unsigned int bl999_prev_time_falling = 0;
+static volatile unsigned long bl999_pwm_high_length = 0;
+static volatile unsigned long bl999_pwm_low_length = 0;
+static volatile unsigned long bl999_prev_time_rising = 0;
+static volatile unsigned long bl999_prev_time_falling = 0;
 static volatile byte bl999_state = 0;
 static byte bl999_data[BL999_DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 static byte bl999_pin = 2;
