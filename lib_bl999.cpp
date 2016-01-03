@@ -48,8 +48,8 @@ extern void bl999_rx_stop() {
 extern void bl999_wait_rx() {
 //    while (bl999_active && !bl999_message_ready)
 //        ;
-    byte state = bl999_state;
-    while (bl999_state == state)
+    unsigned int state = bl999_pwm_low_length;
+    while (bl999_pwm_low_length == state)
         ;
 }
 
@@ -87,7 +87,7 @@ extern boolean bl999_get_message(BL999Info& info) {
 
     return checkSumMatches;*/
 
-    info.channel = bl999_state;
+    info.temperature = bl999_pwm_low_length;
     return true;
 }
 
@@ -97,17 +97,16 @@ extern boolean bl999_get_message(BL999Info& info) {
 
 extern void _bl999_rising() {
     attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_falling, FALLING);
-    bl999_state = !bl999_state;
 
     //Do not rewrite last received but unread message
-    /*if (!bl999_message_ready) {
+    if (!bl999_message_ready) {
 
         //will be used in falling interrupt
         bl999_prev_time_rising = micros();
 
         bl999_pwm_low_length = micros() - bl999_prev_time_falling;
 
-        if (bl999_state % 2 == 0) {
+        /*if (bl999_state % 2 == 0) {
             //Clear state to 0 since we are now in ivalid state
             _bl999_setState(0, true);
         } else {
@@ -149,16 +148,15 @@ extern void _bl999_rising() {
                     bl999_pwm_low_length = 0;
                 }
             }
-        }
-    }*/
+        }*/
+    }
 }
 
 extern void _bl999_falling() {
     attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_rising, RISING);
-    bl999_state = !bl999_state;
 
     //Do not rewrite last received but unread message
-    /*if (!bl999_message_ready) {
+    if (!bl999_message_ready) {
         //remember current time
         //it will be used in rising function
         bl999_prev_time_falling = micros();
@@ -166,7 +164,7 @@ extern void _bl999_falling() {
         //calc length of last HIGH pulse
         bl999_pwm_high_length = micros() - bl999_prev_time_rising;
 
-        if (bl999_state % 2 == 0) {
+        /*if (bl999_state % 2 == 0) {
             //We only can proceed if state is even: 0, 2, 4 - after this state
             //we always expect divider HIGH pulse to happen
             _bl999_setState(bl999_state + 1, _bl999_matchDivider(bl999_pwm_high_length));
@@ -174,8 +172,8 @@ extern void _bl999_falling() {
             //Clear state to zero since it happens that we are in invalid state
             //at this point
             _bl999_setState(0, true);
-        }
-    }*/
+        }*/
+    }
 }
 
 /*extern boolean _bl999_isCheckSumMatch() {
