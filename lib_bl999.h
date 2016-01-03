@@ -71,7 +71,7 @@ extern void bl999_set_rx_pin(byte pin);
 extern void bl999_rx_start();
 
 //stops listening for the signals
-//extern void bl999_rx_stop();
+extern void bl999_rx_stop();
 
 //blocks execution until message from sensor(s) will be received
 extern void bl999_wait_rx();

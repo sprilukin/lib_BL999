@@ -25,25 +25,25 @@ extern "C" {
 //=====================
 
 extern void bl999_set_rx_pin(byte pin) {
-    //bl999_rx_stop();
+    bl999_rx_stop();
     bl999_pin = pin;
 }
 
 extern void bl999_rx_start() {
-    //if (!bl999_active) {
+    if (!bl999_active) {
         attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_rising, RISING);
-    //    bl999_state = 0;
-    //    bl999_active = true;
-    //}
+        bl999_state = 0;
+        bl999_active = true;
+    }
 }
 
-/*extern void bl999_rx_stop() {
+extern void bl999_rx_stop() {
     if (bl999_active) {
         detachInterrupt(digitalPinToInterrupt(bl999_pin));
         bl999_active = false;
         bl999_state = 0;
     }
-}*/
+}
 
 extern void bl999_wait_rx() {
 //    while (bl999_active && !bl999_message_ready)
