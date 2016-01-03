@@ -23,15 +23,17 @@ void setup() {
 void loop() {
 
     //blocks until message will not be read
-    bl999_wait_rx();
-
-    //read message to info and if check sum correct - output it to serial port
-    if (bl999_get_message(info)) {
-        Serial.println("====== Got message: ");
-        //Serial.println(info.channel);
-        //Serial.println(info.powerUUID);
-        //Serial.println(info.battery);
-        Serial.println(info.temperature);
-        //Serial.println(info.humidity);
+    if (bl999_have_message()) {
+        //read message to info and if check sum correct - output it to serial port
+        if (bl999_get_message(info)) {
+            Serial.println("====== Got message: ");
+            Serial.println(info.channel);
+            Serial.println(info.powerUUID);
+            Serial.println(info.battery);
+            Serial.println(info.temperature);
+            Serial.println(info.humidity);
+        }
     }
+
+    delay(1000);
 }

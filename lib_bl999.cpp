@@ -46,10 +46,7 @@ extern void bl999_rx_stop() {
 }
 
 extern void bl999_wait_rx() {
-//    while (bl999_active && !bl999_message_ready)
-//        ;
-    unsigned int state = bl999_pwm_low_length;
-    while (bl999_pwm_low_length == state)
+    while (bl999_active && !bl999_message_ready)
         ;
 }
 
@@ -69,7 +66,7 @@ extern boolean bl999_have_message() {
 extern boolean bl999_get_message(BL999Info& info) {
 
     // Message available?
-    /*if (!bl999_message_ready) {
+    if (!bl999_message_ready) {
         return false;
     }
 
@@ -84,10 +81,7 @@ extern boolean bl999_get_message(BL999Info& info) {
     bl999_state = 0;
     bl999_message_ready = false;
 
-    return checkSumMatches;*/
-
-    info.temperature = bl999_pwm_low_length;
-    return true;
+    return checkSumMatches;
 }
 
 //===============
@@ -115,7 +109,7 @@ extern void _bl999_rising() {
                 return;
             }
 
-            /*byte newState = bl999_state + 1;
+            byte newState = bl999_state + 1;
             boolean matchOne = _bl999_matchOneBit(bl999_pwm_low_length);
             boolean matchZero = _bl999_matchZeroBit(bl999_pwm_low_length);
 
@@ -146,7 +140,7 @@ extern void _bl999_rising() {
                     bl999_pwm_high_length = 0;
                     bl999_pwm_low_length = 0;
                 }
-            }*/
+            }
         }
     }
 }
