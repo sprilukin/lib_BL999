@@ -53,18 +53,17 @@ extern void bl999_wait_rx() {
         ;
 }
 
-/*extern boolean bl999_wait_rx_max(unsigned long milliseconds) {
+extern boolean bl999_wait_rx_max(unsigned long milliseconds) {
     unsigned long start = millis();
 
     while (bl999_active && !bl999_message_ready && ((millis() - start) < milliseconds))
         ;
 
     return bl999_message_ready;
-}*/
+}
 
-extern byte bl999_have_message() {
-    //return bl999_message_ready;
-    return true;
+extern boolean bl999_have_message() {
+    return bl999_message_ready;
 }
 
 extern boolean bl999_get_message(BL999Info& info) {
@@ -176,7 +175,7 @@ extern void _bl999_falling() {
     }
 }
 
-/*extern boolean _bl999_isCheckSumMatch() {
+extern boolean _bl999_isCheckSumMatch() {
 
     //Sum first 8 nibbles
     int sum = 0;
@@ -259,7 +258,7 @@ extern void _bl999_fillDataArray(byte bitNumber, byte value) {
     //Write all nibbles in reversed order
     //so it will be easier to do calculations later
     bl999_data[dataArrayIndex] |= (value << bitInNibble);
-}*/
+}
 
 // Matcher for divider bit
 extern boolean _bl999_matchDivider(unsigned long value) {
@@ -272,14 +271,14 @@ extern boolean _bl999_matchStartBit(unsigned long value) {
 }
 
 // Matcher for binary 1
-/*extern boolean _bl999_matchOneBit(int value) {
+extern boolean _bl999_matchOneBit(unsigned long value) {
     return _bl999_match(value, BL999_BIT_1_LENGTH, BL999_REGULAR_BIT_THRESHOLD);
 }
 
 // Matcher for binary 0
-extern boolean _bl999_matchZeroBit(int value) {
+extern boolean _bl999_matchZeroBit(unsigned long value) {
     return _bl999_match(value, BL999_BIT_0_LENGTH, BL999_REGULAR_BIT_THRESHOLD);
-}*/
+}
 
 //Whether pulse length value matches specified constant with specified threshold
 extern boolean _bl999_match(unsigned long value, unsigned long mathConst, unsigned int threshold) {

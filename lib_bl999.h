@@ -78,13 +78,13 @@ extern void bl999_wait_rx();
 
 //blocks execution until message from sensor(s) will be received
 //but not more than for passed amount of milliseconds
-//extern boolean bl999_wait_rx_max(unsigned long milliseconds);
+extern boolean bl999_wait_rx_max(unsigned long milliseconds);
 
 //returns true if whole message from sensor(s) was recieved
 //NOTE: message will not be overridden with other messages
 //until it will be read by the client using bl999_get_message
 //NOTE2: this function does not take in account check sum
-extern byte bl999_have_message();
+extern boolean bl999_have_message();
 
 //if message was fully recieved (matches check sum or not)
 //it will be written to info structure
@@ -101,7 +101,7 @@ extern void _bl999_rising();
 extern void _bl999_falling();
 
 //calc check sum and compare with received one
-/*extern boolean _bl999_isCheckSumMatch();
+extern boolean _bl999_isCheckSumMatch();
 
 //get sensor channel from message
 extern byte _bl999_getSensorChannel();
@@ -119,7 +119,7 @@ extern int _bl999_getTemperature();
 extern byte _bl999_getHumidity();
 
 //fill data array with next data bit
-extern void _bl999_fillDataArray(byte bitNumber, byte value);*/
+extern void _bl999_fillDataArray(byte bitNumber, byte value);
 
 // Matcher for divider bit
 extern boolean _bl999_matchDivider(unsigned long value);
@@ -128,10 +128,10 @@ extern boolean _bl999_matchDivider(unsigned long value);
 extern boolean _bl999_matchStartBit(unsigned long value);
 
 // Matcher for binary 1
-/*extern boolean _bl999_matchOneBit(int value);
+extern boolean _bl999_matchOneBit(unsigned long int value);
 
 // Matcher for binary 0
-extern boolean _bl999_matchZeroBit(int value);*/
+extern boolean _bl999_matchZeroBit(unsigned long int value);
 
 //Whether pulse length value matches specified constant with specified threshold
 extern boolean _bl999_match(unsigned long value, unsigned long mathConst, unsigned int threshold);
