@@ -49,6 +49,13 @@
 //totally we have 36/4 = 9 nibbles
 #define BL999_DATA_ARRAY_SIZE BL999_DATA_BITS_AMOUNT / BL999_BITS_PER_PACKET
 
+// == Utility defines ==
+
+//On some microcontrollers infinite loop cause watch dog reset,
+//so introducing some small delay in loop
+#define BL999_DELAY_ON_WAIT 10
+
+
 //In this struct result will be stored
 typedef struct {
     byte channel : 2; // up to 3 channels

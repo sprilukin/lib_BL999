@@ -46,15 +46,17 @@ extern void bl999_rx_stop() {
 }
 
 extern void bl999_wait_rx() {
-    while (bl999_active && !bl999_message_ready)
-        ;
+    while (bl999_active && !bl999_message_ready) {
+        delay(BL999_DELAY_ON_WAIT);
+    }
 }
 
 extern boolean bl999_wait_rx_max(unsigned long milliseconds) {
     unsigned long start = millis();
 
-    while (bl999_active && !bl999_message_ready && ((millis() - start) < milliseconds))
-        ;
+    while (bl999_active && !bl999_message_ready && ((millis() - start) < milliseconds)) {
+        delay(BL999_DELAY_ON_WAIT);
+    }
 
     return bl999_message_ready;
 }
