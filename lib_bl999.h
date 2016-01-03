@@ -119,25 +119,25 @@ extern int _bl999_getTemperature();
 extern byte _bl999_getHumidity();
 
 //fill data array with next data bit
-extern void _bl999_fillDataArray(byte bitNumber, byte value);
+extern void _bl999_fillDataArray(byte bitNumber, byte value);*/
 
 // Matcher for divider bit
-extern boolean _bl999_matchDivider(int value);
+extern boolean _bl999_matchDivider(unsigned long value);
 
 // Matcher for start bit
-extern boolean _bl999_matchStartBit(int value);
+extern boolean _bl999_matchStartBit(unsigned long value);
 
 // Matcher for binary 1
-extern boolean _bl999_matchOneBit(int value);
+/*extern boolean _bl999_matchOneBit(int value);
 
 // Matcher for binary 0
-extern boolean _bl999_matchZeroBit(int value);
+extern boolean _bl999_matchZeroBit(int value);*/
 
 //Whether pulse length value matches specified constant with specified threshold
-extern boolean _bl999_match(int value, int mathConst, int threshold);
+extern boolean _bl999_match(unsigned long value, unsigned long mathConst, unsigned int threshold);
 
 //set state to new value but only when condition is true
-extern void _bl999_setState(byte st, boolean condition);*/
+extern void _bl999_setState(byte st, boolean condition);
 }
 
 #endif

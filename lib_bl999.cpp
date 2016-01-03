@@ -106,7 +106,7 @@ extern void _bl999_rising() {
 
         bl999_pwm_low_length = micros() - bl999_prev_time_falling;
 
-        /*if (bl999_state % 2 == 0) {
+        if (bl999_state % 2 == 0) {
             //Clear state to 0 since we are now in ivalid state
             _bl999_setState(0, true);
         } else {
@@ -116,7 +116,7 @@ extern void _bl999_rising() {
                 return;
             }
 
-            byte newState = bl999_state + 1;
+            /*byte newState = bl999_state + 1;
             boolean matchOne = _bl999_matchOneBit(bl999_pwm_low_length);
             boolean matchZero = _bl999_matchZeroBit(bl999_pwm_low_length);
 
@@ -147,8 +147,8 @@ extern void _bl999_rising() {
                     bl999_pwm_high_length = 0;
                     bl999_pwm_low_length = 0;
                 }
-            }
-        }*/
+            }*/
+        }
     }
 }
 
@@ -164,7 +164,7 @@ extern void _bl999_falling() {
         //calc length of last HIGH pulse
         bl999_pwm_high_length = micros() - bl999_prev_time_rising;
 
-        /*if (bl999_state % 2 == 0) {
+        if (bl999_state % 2 == 0) {
             //We only can proceed if state is even: 0, 2, 4 - after this state
             //we always expect divider HIGH pulse to happen
             _bl999_setState(bl999_state + 1, _bl999_matchDivider(bl999_pwm_high_length));
@@ -172,7 +172,7 @@ extern void _bl999_falling() {
             //Clear state to zero since it happens that we are in invalid state
             //at this point
             _bl999_setState(0, true);
-        }*/
+        }
     }
 }
 
@@ -259,35 +259,35 @@ extern void _bl999_fillDataArray(byte bitNumber, byte value) {
     //Write all nibbles in reversed order
     //so it will be easier to do calculations later
     bl999_data[dataArrayIndex] |= (value << bitInNibble);
-}
+}*/
 
 // Matcher for divider bit
-extern boolean _bl999_matchDivider(int value) {
+extern boolean _bl999_matchDivider(unsigned long value) {
     return _bl999_match(value, BL999_DIVIDER_PULSE_LENGTH, BL999_DIVIDER_THRESHOLD);
 }
 
 // Matcher for start bit
-extern boolean _bl999_matchStartBit(int value) {
+extern boolean _bl999_matchStartBit(unsigned long value) {
     return _bl999_match(value, BL999_START_BIT_LENGTH, BL999_START_BIT_THRESHOLD);
 }
 
 // Matcher for binary 1
-extern boolean _bl999_matchOneBit(int value) {
+/*extern boolean _bl999_matchOneBit(int value) {
     return _bl999_match(value, BL999_BIT_1_LENGTH, BL999_REGULAR_BIT_THRESHOLD);
 }
 
 // Matcher for binary 0
 extern boolean _bl999_matchZeroBit(int value) {
     return _bl999_match(value, BL999_BIT_0_LENGTH, BL999_REGULAR_BIT_THRESHOLD);
-}
+}*/
 
 //Whether pulse length value matches specified constant with specified threshold
-extern boolean _bl999_match(int value, int mathConst, int threshold) {
+extern boolean _bl999_match(unsigned long value, unsigned long mathConst, unsigned int threshold) {
     return value > mathConst - threshold && value < mathConst + threshold;
 }
 
 //set state to new value but only when condition is true
 extern void _bl999_setState(byte st, boolean condition) {
     bl999_state = condition ? st : 0;
-}*/
+}
 }
