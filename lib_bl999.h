@@ -14,7 +14,7 @@
 // == PWM high and low pulse length ==
 
 //high pulse length of the bit's divider
-#define BL999_DIVIDER_PULSE_LENGTH 600
+/*#define BL999_DIVIDER_PULSE_LENGTH 600
 
 //length of the start bit low pulse
 #define BL999_START_BIT_LENGTH 9000
@@ -47,7 +47,7 @@
 #define BL999_BITS_PER_PACKET 4
 
 //totally we have 36/4 = 9 nibbles
-#define BL999_DATA_ARRAY_SIZE BL999_DATA_BITS_AMOUNT / BL999_BITS_PER_PACKET
+#define BL999_DATA_ARRAY_SIZE BL999_DATA_BITS_AMOUNT / BL999_BITS_PER_PACKET*/
 
 //In this struct result will be stored
 typedef struct {
@@ -71,14 +71,14 @@ extern void bl999_set_rx_pin(byte pin);
 extern void bl999_rx_start();
 
 //stops listening for the signals
-extern void bl999_rx_stop();
+//extern void bl999_rx_stop();
 
 //blocks execution until message from sensor(s) will be received
 extern void bl999_wait_rx();
 
 //blocks execution until message from sensor(s) will be received
 //but not more than for passed amount of milliseconds
-extern boolean bl999_wait_rx_max(unsigned long milliseconds);
+//extern boolean bl999_wait_rx_max(unsigned long milliseconds);
 
 //returns true if whole message from sensor(s) was recieved
 //NOTE: message will not be overridden with other messages
@@ -101,7 +101,7 @@ extern void _bl999_rising();
 extern void _bl999_falling();
 
 //calc check sum and compare with received one
-extern boolean _bl999_isCheckSumMatch();
+/*extern boolean _bl999_isCheckSumMatch();
 
 //get sensor channel from message
 extern byte _bl999_getSensorChannel();
@@ -137,7 +137,7 @@ extern boolean _bl999_matchZeroBit(int value);
 extern boolean _bl999_match(int value, int mathConst, int threshold);
 
 //set state to new value but only when condition is true
-extern void _bl999_setState(byte st, boolean condition);
+extern void _bl999_setState(byte st, boolean condition);*/
 }
 
 #endif

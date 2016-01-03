@@ -8,15 +8,15 @@
 #include <Arduino.h>
 #include "lib_bl999.h"
 
-static volatile unsigned long bl999_pwm_high_length = 0;
+/*static volatile unsigned long bl999_pwm_high_length = 0;
 static volatile unsigned long bl999_pwm_low_length = 0;
 static volatile unsigned long bl999_prev_time_rising = 0;
-static volatile unsigned long bl999_prev_time_falling = 0;
+static volatile unsigned long bl999_prev_time_falling = 0;*/
 static volatile byte bl999_state = 0;
-static byte bl999_data[BL999_DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+//static byte bl999_data[BL999_DATA_ARRAY_SIZE] = {0, 0, 0, 0, 0, 0, 0, 0, 0};*/
 static byte bl999_pin = 2;
-static volatile boolean bl999_active = false;
-static volatile boolean bl999_message_ready = false;
+/*static volatile boolean bl999_active = false;
+static volatile boolean bl999_message_ready = false;*/
 
 extern "C" {
 
@@ -25,48 +25,52 @@ extern "C" {
 //=====================
 
 extern void bl999_set_rx_pin(byte pin) {
-    bl999_rx_stop();
+    //bl999_rx_stop();
     bl999_pin = pin;
 }
 
 extern void bl999_rx_start() {
-    if (!bl999_active) {
+    //if (!bl999_active) {
         attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_rising, RISING);
-        bl999_state = 0;
-        bl999_active = true;
-    }
+    //    bl999_state = 0;
+    //    bl999_active = true;
+    //}
 }
 
-extern void bl999_rx_stop() {
+/*extern void bl999_rx_stop() {
     if (bl999_active) {
         detachInterrupt(digitalPinToInterrupt(bl999_pin));
         bl999_active = false;
         bl999_state = 0;
     }
-}
+}*/
 
 extern void bl999_wait_rx() {
-    while (bl999_active && !bl999_message_ready)
+//    while (bl999_active && !bl999_message_ready)
+//        ;
+    byte state = bl999_state;
+    while (bl999_state == state)
         ;
 }
 
-extern boolean bl999_wait_rx_max(unsigned long milliseconds) {
+/*extern boolean bl999_wait_rx_max(unsigned long milliseconds) {
     unsigned long start = millis();
 
     while (bl999_active && !bl999_message_ready && ((millis() - start) < milliseconds))
         ;
 
     return bl999_message_ready;
-}
+}*/
 
 extern byte bl999_have_message() {
-    return bl999_message_ready;
+    //return bl999_message_ready;
+    return true;
 }
 
 extern boolean bl999_get_message(BL999Info& info) {
 
     // Message available?
-    if (!bl999_message_ready) {
+    /*if (!bl999_message_ready) {
         return false;
     }
 
@@ -81,7 +85,10 @@ extern boolean bl999_get_message(BL999Info& info) {
     bl999_state = 0;
     bl999_message_ready = false;
 
-    return checkSumMatches;
+    return checkSumMatches;*/
+
+    info.channel = bl999_state;
+    return true;
 }
 
 //===============
@@ -90,9 +97,10 @@ extern boolean bl999_get_message(BL999Info& info) {
 
 extern void _bl999_rising() {
     attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_falling, FALLING);
+    bl999_state = !bl999_state;
 
     //Do not rewrite last received but unread message
-    if (!bl999_message_ready) {
+    /*if (!bl999_message_ready) {
 
         //will be used in falling interrupt
         bl999_prev_time_rising = micros();
@@ -142,14 +150,15 @@ extern void _bl999_rising() {
                 }
             }
         }
-    }
+    }*/
 }
 
 extern void _bl999_falling() {
     attachInterrupt(digitalPinToInterrupt(bl999_pin), _bl999_rising, RISING);
+    bl999_state = !bl999_state;
 
     //Do not rewrite last received but unread message
-    if (!bl999_message_ready) {
+    /*if (!bl999_message_ready) {
         //remember current time
         //it will be used in rising function
         bl999_prev_time_falling = micros();
@@ -166,10 +175,10 @@ extern void _bl999_falling() {
             //at this point
             _bl999_setState(0, true);
         }
-    }
+    }*/
 }
 
-extern boolean _bl999_isCheckSumMatch() {
+/*extern boolean _bl999_isCheckSumMatch() {
 
     //Sum first 8 nibbles
     int sum = 0;
@@ -282,5 +291,5 @@ extern boolean _bl999_match(int value, int mathConst, int threshold) {
 //set state to new value but only when condition is true
 extern void _bl999_setState(byte st, boolean condition) {
     bl999_state = condition ? st : 0;
-}
+}*/
 }
