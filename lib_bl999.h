@@ -14,7 +14,7 @@
 // == PWM high and low pulse length ==
 
 //high pulse length of the bit's divider
-/*#define BL999_DIVIDER_PULSE_LENGTH 600
+#define BL999_DIVIDER_PULSE_LENGTH 600
 
 //length of the start bit low pulse
 #define BL999_START_BIT_LENGTH 9000
@@ -47,7 +47,7 @@
 #define BL999_BITS_PER_PACKET 4
 
 //totally we have 36/4 = 9 nibbles
-#define BL999_DATA_ARRAY_SIZE BL999_DATA_BITS_AMOUNT / BL999_BITS_PER_PACKET*/
+#define BL999_DATA_ARRAY_SIZE BL999_DATA_BITS_AMOUNT / BL999_BITS_PER_PACKET
 
 //In this struct result will be stored
 typedef struct {
