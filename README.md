@@ -71,7 +71,7 @@ __| |_________| |_____| |__| |_
 
   * **D0-F3** - temperature written backwards and multiplied by 10. For example:
          `1010|0011|0000` = 19.7° (Celsius) because `0000|1100|0101` = 197
-         (not that not only nibbles written in reversed order, but bits in nibble also reversed)
+         (note that not only nibbles written in reversed order, but bits in nibble also reversed)
          negative temperature is stored in [two's complement code](https://en.wikipedia.org/wiki/Two%27s_complement), 
          for example:
          `0010|1001|1111` = -10.8° (Celsius) because
@@ -96,6 +96,8 @@ __| |_________| |_____| |__| |_
     Please read datasheet for your receiver about how to use it with Arduino
   * In the example below signal pin of the receiver 
     is expected to be attached to Arduino digital pin 2.
+    Please note that only digital pins which supports ISR should be used.
+    See [Digital Pins suitable for ISR on Arduino](https://www.arduino.cc/en/Reference/AttachInterrupt)
     Sketch infinetely wait for message from any BL999 transmitter
     and writes it to serial port
   
@@ -106,12 +108,19 @@ static BL999Info info;
 
 void setup() {
     Serial.begin(115200);
+    
+    //Set pin
     bl999_set_rx_pin(2);
+    
+    //Start ISR machinery
     bl999_rx_start();
 }
 
 void loop() {
+    //wait infinetly until data will be received
     bl999_wait_rx();
+    
+    //If data received and CRC correct - print to serial
     if (bl999_get_message(info)) {
         Serial.println("====== Got message: ");
         Serial.println(info.channel);
