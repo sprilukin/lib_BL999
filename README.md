@@ -117,7 +117,7 @@ void setup() {
 }
 
 void loop() {
-    //wait infinetly until data will be received
+    //wait infinetly until data will be received. Either correct or not. CRC does not checked at this moment
     bl999_wait_rx();
     
     //If data received and CRC correct - print to serial
