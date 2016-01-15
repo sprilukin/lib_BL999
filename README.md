@@ -97,7 +97,7 @@ __| |_________| |_____| |__| |_
   * In the example below signal pin of the receiver 
     is expected to be attached to Arduino digital pin 2.
     Please note that only digital pins which supports ISR should be used.
-    See [Digital Pins suitable for ISR on Arduino](https://www.arduino.cc/en/Reference/AttachInterrupt)
+    See [Digital Pins suitable for ISR on Arduino](https://www.arduino.cc/en/Reference/AttachInterrupt).
     Sketch infinetely wait for message from any BL999 transmitter
     and writes it to serial port
   
