@@ -1,3 +1,6 @@
+#####0.0.4
+- Added non-blocking example
+
 #####0.0.3
 - Updated documentation
 

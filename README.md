@@ -109,31 +109,64 @@ static BL999Info info;
 
 void setup() {
     Serial.begin(115200);
-    
-    //Set pin
+
+    //set digital pin to read info from
     bl999_set_rx_pin(2);
-    
-    //Start ISR machinery
+
+    //start reading data from sensor
     bl999_rx_start();
 }
 
 void loop() {
-    //wait infinetly until data will be received. 
-    //Either correct or not. 
-    //CRC does not checked at this moment
+
+    //waits infinitely until message will be received.
+    //Either correct or not.
+    //check sum does not checked at this moment
     bl999_wait_rx();
-    
-    //If data received and CRC correct - print to serial
+
+    //read message to info and if check sum correct - outputs it to the serial port
     if (bl999_get_message(info)) {
-        Serial.println("====== Got message: ");
-        Serial.println(info.channel);
-        Serial.println(info.powerUUID);
-        Serial.println(info.battery);
-        Serial.println(info.temperature);
-        Serial.println(info.humidity);
+        Serial.println("====== Got message from BL999 sensor: ");
+        Serial.println("Channel: " + info.channel);
+        Serial.println("PowerUUID: " + info.powerUUID);
+        Serial.println("Battery is " + (info.battery == 0 ? "Ok" : "Low"));
+        Serial.println("Temperature: " + String(info.temperature / 10.0));
+        Serial.println("Humidity: " + info.humidity + "%");
     }
 }
 ```
+
+  * The next example is the same except that in this example main loop does not blocked at all
+  
+```C
+#include <lib_bl999.h>
+
+static BL999Info info;
+
+void setup() {
+    Serial.begin(115200);
+
+    //set digital pin to read info from
+    bl999_set_rx_pin(2);
+
+    //start reading data from sensor
+    bl999_rx_start();
+}
+
+void loop() {
+
+    //read message to info and if check sum correct - outputs it to the serial port
+    //does not block main loop
+    if (bl999_have_message() && bl999_get_message(info)) {
+        Serial.println("====== Got message from BL999 sensor: ");
+        Serial.println("Channel: " + info.channel);
+        Serial.println("PowerUUID: " + info.powerUUID);
+        Serial.println("Battery is " + String(info.battery == 0 ? "Ok" : "Low"));
+        Serial.println("Temperature: " + String(info.temperature / 10.0));
+        Serial.println("Humidity: " + String(info.humidity) + "%");
+    }
+}
+```  
 
 ## API description
 

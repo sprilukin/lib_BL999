@@ -3,6 +3,10 @@
  * BL999 temperature/humidity sensor
  * See https://github.com/sprilukin/lib_BL999 for more documentation
  *
+ * This is non-blocking example.
+ * Since library uses interrupts
+ * it's enough just to check time-to time whether message is present.
+ *
  * Author: Sergey Prilukin sprilukin@gmail.com
  */
 
@@ -22,18 +26,14 @@ void setup() {
 
 void loop() {
 
-    //waits infinitely until message will be received.
-    //Either correct or not.
-    //check sum does not checked at this moment
-    bl999_wait_rx();
-
     //read message to info and if check sum correct - outputs it to the serial port
-    if (bl999_get_message(info)) {
+    //does not block main loop
+    if (bl999_have_message() && bl999_get_message(info)) {
         Serial.println("====== Got message from BL999 sensor: ");
         Serial.println("Channel: " + info.channel);
         Serial.println("PowerUUID: " + info.powerUUID);
-        Serial.println("Battery is " + (info.battery == 0 ? "Ok" : "Low"));
+        Serial.println("Battery is " + String(info.battery == 0 ? "Ok" : "Low"));
         Serial.println("Temperature: " + String(info.temperature / 10.0));
-        Serial.println("Humidity: " + info.humidity + "%");
+        Serial.println("Humidity: " + String(info.humidity) + "%");
     }
 }
