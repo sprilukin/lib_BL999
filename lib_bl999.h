@@ -1,6 +1,6 @@
 /*
  * lib_bl999.h - library for Arduino to work with BL999 temperature/humidity sensor
- * See README file in this directory for more documentation
+ * See https://github.com/sprilukin/lib_BL999 for more documentation
  *
  * Author: Sergey Prilukin sprilukin@gmail.com
  */

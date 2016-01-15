@@ -9,6 +9,7 @@ Arduino library for **BL999** remote Temperature/Humidity sensor
   1. [Structure of data bits in a message](#structure-of-data-bits-in-a-message)
   1. [Bits purpose](#bits-purpose)
   1. [Library usage](#library-usage)
+  1. [API description](#api-description)
 
 ## Sensor description
   * BL999 sensor working frequency is 433 Mhz
@@ -133,3 +134,36 @@ void loop() {
     }
 }
 ```
+
+## API description
+
+  * **BL999Info** - stucture which holds sensor information like 
+                        channel, temperature, humidity and power UUID
+   ```
+   typedef struct {
+       byte channel : 2;     // up to 3 channels
+       byte powerUUID : 6;   //unique power state per current power on of the sensor
+       byte battery : 1;     // 0 - ok, 1- low
+       int temperature : 12; // temperature * 10, for example 217 means 21.7°C
+       byte humidity : 8;    //1-99 humidity in %
+   } BL999Info;
+   ```
+   
+  * **void bl999_set_rx_pin(byte pin)** - set up digital pin which will be used to 
+    receive sensor signals. Note: digital pin should support ISR, see datasheet for your microcontroller to find pins which supports interrupts 
+  * **void bl999_rx_start()** - starts listening for message from BL999 sensor(s)
+  * **void bl999_rx_stop()** - stops listening for the signals 
+  * **void bl999_wait_rx()** - blocks execution until message from sensor(s) will be received
+  * **boolean bl999_wait_rx_max(unsigned long milliseconds)** - blocks execution until message from sensor(s) will be received
+    but not more than for passed amount of milliseconds. Returns `true` if message has been receieved
+    `false` otherwise
+  * **boolean bl999_have_message()** - 
+    returns `true` if message from any sensor was recieved, `false` otherwise
+    NOTE: message will not be overridden with furrther messages
+    until it will be read by the client using **bl999_get_message(BL999Info& info)** method
+    NOTE2: this function does not take in account check sum, so it will return `true` even if message check sum is incorrect  
+  * **boolean bl999_get_message(BL999Info& info)** - 
+    if message was recieved (matches check sum or not)
+    it will be written to the passed `info` structure.
+    Returns `true` if message received and check sum matches
+    returns `false` otherwise
