@@ -1,0 +1,12 @@
+{
+  "name": "lib_bl999",
+  "keywords": "BL999, temperature, humidity",
+  "description": "Receive temperature & humidity from BL999 sensor",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/sprilukin/lib_BL999.git"
+  },
+  "frameworks": "arduino",
+  "platforms": ["atmelavr", "espressif"]
+}
