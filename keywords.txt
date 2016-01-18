@@ -1,0 +1,12 @@
+#####################################
+# Syntax coloring Map for lib_bl999
+#####################################
+
+BL999Info               KEYWORD1
+bl999_set_rx_pin        KEYWORD2
+bl999_rx_start          KEYWORD2
+bl999_rx_stop           KEYWORD2
+bl999_wait_rx           KEYWORD2
+bl999_wait_rx_max       KEYWORD2
+bl999_have_message      KEYWORD2
+bl999_get_message       KEYWORD2
