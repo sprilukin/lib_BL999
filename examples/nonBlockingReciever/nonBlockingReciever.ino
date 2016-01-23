@@ -30,8 +30,8 @@ void loop() {
     //does not block main loop
     if (bl999_have_message() && bl999_get_message(info)) {
         Serial.println("====== Got message from BL999 sensor: ");
-        Serial.println("Channel: " + info.channel);
-        Serial.println("PowerUUID: " + info.powerUUID);
+        Serial.println("Channel: " + String(info.channel));
+        Serial.println("PowerUUID: " + String(info.powerUUID));
         Serial.println("Battery is " + String(info.battery == 0 ? "Ok" : "Low"));
         Serial.println("Temperature: " + String(info.temperature / 10.0));
         Serial.println("Humidity: " + String(info.humidity) + "%");
