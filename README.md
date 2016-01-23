@@ -1,6 +1,7 @@
 # lib_BL999
 
-Arduino library for **BL999** remote Temperature/Humidity sensor
+Arduino library for **BL999** remote Temperature/Humidity sensor<br/>
+It supports both **BL999** sensor types: with humidity and temperature-only
 
 ## Table of Contents
 
