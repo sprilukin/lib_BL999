@@ -14,7 +14,7 @@
 // == PWM high and low pulse length ==
 
 //high pulse length of the bit's divider
-#define BL999_DIVIDER_PULSE_LENGTH 600
+#define BL999_DIVIDER_PULSE_LENGTH 550
 
 //length of the start bit low pulse
 #define BL999_START_BIT_LENGTH 9000
