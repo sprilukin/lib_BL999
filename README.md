@@ -191,12 +191,18 @@ void loop() {
 typedef struct {
    // up to 3 channels
    byte channel : 2;
-   //unique power state per current power on of the sensor
+   
+   //unique power state per 
+   //current power on of the sensor
    byte powerUUID : 6;
+   
    // 0 - ok, 1- low
    byte battery : 1;
-   // temperature * 10, for example 217 means 21.7°C
+   
+   // temperature * 10, 
+   // for example 217 means 21.7°C
    int temperature : 12;
+   
    //1-99 humidity in %
    byte humidity : 8;
 } BL999Info;
