@@ -36,7 +36,7 @@ __| |_________| |_____| |__| |_
 ```
   
   * H1: PWM high pulse which is used as a divider of data bits. 
-    It's length is `~600 micro seconds ± 100 microseconds`.
+    It's length is `~550 micro seconds ± 100 microseconds`.
     All high pulses should looks like H1 in BL999 message packet.
   * L1: PWM low pulse which is used as a start bit marker. 
     It's length is `~9 millis ± 1 millis`
@@ -169,36 +169,87 @@ void loop() {
 }
 ```  
 
-## API description
 
-  * **BL999Info** - stucture which holds sensor information like 
-                        channel, temperature, humidity and power UUID
-   ```
-   typedef struct {
-       byte channel : 2;     // up to 3 channels
-       byte powerUUID : 6;   //unique power state per current power on of the sensor
-       byte battery : 1;     // 0 - ok, 1- low
-       int temperature : 12; // temperature * 10, for example 217 means 21.7°C
-       byte humidity : 8;    //1-99 humidity in %
-   } BL999Info;
-   ```
-   
-  * **void bl999_set_rx_pin(byte pin)** - set up digital pin which will be used to 
-    receive sensor signals. Note: digital pin should support ISR, 
-    see datasheet for your microcontroller to find pins which supports interrupts 
-  * **void bl999_rx_start()** - starts listening for messages from BL999 sensor(s)
-  * **void bl999_rx_stop()** - stops listening for the messages from sensor(s) 
-  * **void bl999_wait_rx()** - blocks execution until message from sensor(s) will be received
-  * **boolean bl999_wait_rx_max(unsigned long milliseconds)** - blocks execution until message from sensor(s) will be received
-    but not more than for passed amount of milliseconds. Returns `true` if message has been receieved
-    `false` otherwise
-  * **boolean bl999_have_message()** - 
-    returns `true` if message from any sensor was recieved, `false` otherwise.
-    **NOTE:** message will not be overridden with furrther messages
-    until it will be read by the client using **bl999_get_message(BL999Info& info)** method.
-    **NOTE2:** this function does not take in account check sum, so it will return `true` even if message check sum is incorrect  
-  * **boolean bl999_get_message(BL999Info& info)** - 
-    if message was recieved (matches check sum or not)
-    it will be written to the passed `info` structure.
-    Returns `true` if message received and check sum matches
-    returns `false` otherwise
+
+## API reference
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Function/Structure</th>
+            <th>Description</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>BL999Info</td>
+            <td>stucture which holds sensor information like channel, temperature, humidity and power UUID</td>
+            <td>
+                <pre>
+typedef struct {
+   // up to 3 channels
+   byte channel : 2;
+   //unique power state per current power on of the sensor
+   byte powerUUID : 6;
+   // 0 - ok, 1- low
+   byte battery : 1;
+   // temperature * 10, for example 217 means 21.7°C
+   int temperature : 12;
+   //1-99 humidity in %
+   byte humidity : 8;
+} BL999Info;
+                </pre>
+            </td>
+        </tr>
+        <tr>
+            <td>void bl999_set_rx_pin(byte pin)</td>
+            <td>set up digital pin which will be used to 
+            receive sensor signals. <b>Note:</b> digital pin should support ISR, 
+                see datasheet for your microcontroller to find pins which supports interrupts.
+                See <a href="https://www.arduino.cc/en/Reference/AttachInterrupt">Arduino ISR pins</a>
+                </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>void bl999_rx_start()</td>
+            <td>starts listening for messages from BL999 sensor(s)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>void bl999_rx_stop()</td>
+            <td>stops listening for the messages from sensor(s) </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>void bl999_wait_rx()</td>
+            <td>blocks execution until message from sensor(s) will be received</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>boolean bl999_wait_rx_max(unsigned long milliseconds)</td>
+            <td>blocks execution until message from sensor(s) will be received
+            but not more than for passed amount of milliseconds. Returns <code>true</code> if message has been receieved
+                <code>false</code> otherwise</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>boolean bl999_have_message()</td>
+            <td>returns <code>true</code> if message from any sensor was recieved, <code>false</code> otherwise.
+            <b>NOTE:</b> message will not be overridden with furrther messages
+                until it will be read by the client using <code>bl999_get_message(BL999Info&amp; info)</code> method.
+                <b>NOTE2:</b> this function does not take in account check sum, so it will return <code>true</code> even if message check sum is incorrect</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>boolean bl999_get_message(BL999Info&amp; info)</td>
+            <td>if message was recieved (matches check sum or not)
+                it will be written to the passed <code>info</code> structure.
+                Returns <code>true</code> if message received and check sum matches
+                returns <code>false</code> otherwise</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+

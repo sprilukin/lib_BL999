@@ -1,3 +1,17 @@
+#####0.0.8
+- Readme updates
+
+#####0.0.7
+- Fixed divider bit timings: 550uS+-100uS
+- Fixed type conversions in Serial.prinln in examples
+
+#####0.0.6
+- Added keywords.txt to satisfy arduino library standards
+- aded library.json for platformio support
+
+#####0.0.5
+- Example moved to a proper place
+
 #####0.0.4
 - Added non-blocking example
 
