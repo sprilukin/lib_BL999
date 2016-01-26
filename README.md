@@ -10,7 +10,7 @@ It supports both **BL999** sensor types: with humidity and temperature-only
   1. [Structure of data bits in a message](#structure-of-data-bits-in-a-message)
   1. [Bits purpose](#bits-purpose)
   1. [Library usage](#library-usage)
-  1. [API description](#api-description)
+  1. [API reference](#api-reference)
 
 ## Sensor description
   * BL999 sensor working frequency is 433 Mhz
