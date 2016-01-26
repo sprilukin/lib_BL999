@@ -94,8 +94,10 @@ __| |_________| |_____| |__| |_
             
 ## Library usage
 
-  * This library is intended to be used with some 433 Mhz receiver.
-    Please read datasheet for your receiver about how to use it with Arduino
+  * This library is intended to be used with 433 Mhz receiver which is able to work in 
+    [OOK](https://en.wikipedia.org/wiki/On-off_keying) mode.
+    For example like [this](http://randomnerdtutorials.com/rf-433mhz-transmitter-receiver-module-with-arduino/) one.
+    Please read datasheet for your receiver about how to use it with Arduino and how to use it in OOK mode
   * In the example below signal pin of the receiver 
     is expected to be attached to Arduino digital pin 2.
     Please note that only digital pins which supports ISR should be used.
