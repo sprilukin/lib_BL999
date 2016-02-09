@@ -8,5 +8,6 @@
     "url": "https://github.com/sprilukin/lib_BL999.git"
   },
   "frameworks": "arduino",
-  "platforms": ["atmelavr", "espressif"]
+  "platforms": ["atmelavr", "espressif"],
+  "version": "0.0.8"
 }
