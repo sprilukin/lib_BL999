@@ -1,3 +1,6 @@
+#####0.0.9
+- Fixed keywords definitions for highlighting in the Arduino IDE
+
 #####0.0.8
 - Readme updates
 
